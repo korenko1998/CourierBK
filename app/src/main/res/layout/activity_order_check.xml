@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5EBDC"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ПРОВЕРКА ЗАКАЗА"
+            android:textColor="#502314"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Проверьте данные чека перед передачей заказа"
+            android:textColor="#8A6658"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/warningText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="#FFF1D6"
+            android:padding="14dp"
+            android:textColor="#6B4700"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="ОСНОВНЫЕ ДАННЫЕ"
+            android:textColor="#502314"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/orderNumberEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="10dp"
+            android:hint="Номер заказа"
+            android:inputType="number"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <EditText
+            android:id="@+id/customerNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Имя клиента"
+            android:inputType="textCapSentences"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <EditText
+            android:id="@+id/phoneEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Телефон +375 XX XXX-XX-XX"
+            android:inputType="phone"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <EditText
+            android:id="@+id/addressEditText"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:gravity="top"
+            android:hint="Адрес доставки *"
+            android:inputType="textCapSentences|textMultiLine"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <EditText
+            android:id="@+id/apartmentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Квартира / офис"
+            android:inputType="text"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <EditText
+            android:id="@+id/commentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="top"
+            android:hint="Комментарий клиенту / курьеру"
+            android:inputType="textCapSentences|textMultiLine"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="ОПЛАТА"
+            android:textColor="#502314"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/totalEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Сумма заказа"
+            android:inputType="numberDecimal"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <EditText
+            android:id="@+id/paymentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Способ оплаты"
+            android:inputType="text"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <EditText
+            android:id="@+id/cashGivenEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Сумма от клиента"
+            android:inputType="numberDecimal"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <EditText
+            android:id="@+id/changeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Сдача"
+            android:inputType="numberDecimal"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="СОСТАВ ЗАКАЗА"
+            android:textColor="#502314"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/itemsEditText"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="top"
+            android:hint="Блюда и количество"
+            android:inputType="textCapSentences|textMultiLine"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <EditText
+            android:id="@+id/drinksEditText"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="top"
+            android:hint="Напитки и объём"
+            android:inputType="textCapSentences|textMultiLine"
+            android:textColor="#502314"
+            android:textColorHint="#9A8175" />
+
+        <Button
+            android:id="@+id/confirmOrderButton"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#D62300"
+            android:text="Я ПРОВЕРИЛ ЗАКАЗ"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>
