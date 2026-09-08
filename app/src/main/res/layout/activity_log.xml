@@ -20,46 +20,86 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Ошибки и события приложения"
+        android:text="Диагностика приложения. Журнал разделён на блоки по 10 000 символов."
         android:textColor="#806D63"
         android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="14dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/copyLogButton"
             android:layout_width="0dp"
-            android:layout_height="54dp"
+            android:layout_height="52dp"
             android:layout_weight="1"
-            android:layout_marginEnd="5dp"
-            android:text="📋 СКОПИРОВАТЬ"
+            android:layout_marginEnd="4dp"
+            android:text="📋 КОПИРОВАТЬ БЛОК"
             android:textColor="#FFFFFF"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             android:backgroundTint="#D62300" />
 
         <Button
-            android:id="@+id/refreshLogButton"
+            android:id="@+id/copyAllLogButton"
             android:layout_width="0dp"
-            android:layout_height="54dp"
+            android:layout_height="52dp"
             android:layout_weight="1"
-            android:layout_marginStart="5dp"
-            android:text="↻ ОБНОВИТЬ"
+            android:layout_marginStart="4dp"
+            android:text="📋 ВЕСЬ ЛОГ"
             android:textColor="#FFFFFF"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             android:backgroundTint="#FF8732" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/previousLogBlockButton"
+            android:layout_width="60dp"
+            android:layout_height="48dp"
+            android:text="◀"
+            android:textColor="#502314"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/blockInfoTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Блок 0 / 0"
+            android:textColor="#502314"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/nextLogBlockButton"
+            android:layout_width="60dp"
+            android:layout_height="48dp"
+            android:text="▶"
+            android:textColor="#502314"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/clearLogButton"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:text="🗑 ОЧИСТИТЬ ЖУРНАЛ"
         android:textColor="#502314"
@@ -67,10 +107,21 @@
         android:textStyle="bold"
         android:backgroundTint="#FFFFFF" />
 
+    <Button
+        android:id="@+id/refreshLogButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:text="↻ ОБНОВИТЬ"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:backgroundTint="#198737" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:background="#FFFFFF"
         android:padding="10dp">
