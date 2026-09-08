@@ -1,7 +1,6 @@
 package com.courierbk.app
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -28,110 +27,73 @@ class OcrActivity : AppCompatActivity() {
     private lateinit var continueOcrButton: Button
 
     private var recognizedText = ""
-
     private var recognizedCashGiven = ""
-
     private var recognizedDrinks = ""
-
     private var receiptImagePath = ""
 
-    override fun onCreate(
-        savedInstanceState: Bundle?
-    ) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(
-            R.layout.activity_ocr
-        )
+        setContentView(R.layout.activity_ocr)
 
         orderNumberEditText =
-            findViewById(
-                R.id.orderNumberEditText
-            )
+            findViewById(R.id.orderNumberEditText)
 
         customerNameEditText =
-            findViewById(
-                R.id.customerNameEditText
-            )
+            findViewById(R.id.customerNameEditText)
 
         phoneEditText =
-            findViewById(
-                R.id.phoneEditText
-            )
+            findViewById(R.id.phoneEditText)
 
         addressEditText =
-            findViewById(
-                R.id.addressEditText
-            )
+            findViewById(R.id.addressEditText)
 
         totalEditText =
-            findViewById(
-                R.id.totalEditText
-            )
+            findViewById(R.id.totalEditText)
 
         paymentEditText =
-            findViewById(
-                R.id.paymentEditText
-            )
+            findViewById(R.id.paymentEditText)
 
         changeEditText =
-            findViewById(
-                R.id.changeEditText
-            )
+            findViewById(R.id.changeEditText)
 
         deliveryDateEditText =
-            findViewById(
-                R.id.deliveryDateEditText
-            )
+            findViewById(R.id.deliveryDateEditText)
 
         certificateEditText =
-            findViewById(
-                R.id.certificateEditText
-            )
+            findViewById(R.id.certificateEditText)
 
         itemsEditText =
-            findViewById(
-                R.id.itemsEditText
-            )
+            findViewById(R.id.itemsEditText)
 
         drinksWarningText =
-            findViewById(
-                R.id.drinksWarningText
-            )
+            findViewById(R.id.drinksWarningText)
 
         continueOcrButton =
-            findViewById(
-                R.id.continueOcrButton
-            )
+            findViewById(R.id.continueOcrButton)
 
         continueOcrButton.setOnClickListener {
             saveAndContinue()
         }
 
         val directOcrText =
-            intent.getStringExtra(
-                "ocr_text"
-            ) ?: ""
+            intent.getStringExtra("ocr_text") ?: ""
 
         val imagePath =
-            intent.getStringExtra(
-                "receipt_image_path"
-            )
+            intent.getStringExtra("receipt_image_path")
+
+        val imageUri =
+            intent.getStringExtra("receipt_image_uri")
 
         receiptImagePath =
             imagePath ?: ""
 
-        val imageUri =
-            intent.getStringExtra(
-                "receipt_image_uri"
-            )
-
         LogUtil.info(
             "OCR_ACTIVITY",
             "OcrActivity запущен. " +
-                    "ocr_text символов=${directOcrText.length}, " +
-                    "imagePath=$imagePath, " +
-                    "imageUri=$imageUri"
+                    "ocr_text символов: ${directOcrText.length}, " +
+                    "imagePath: $imagePath, " +
+                    "imageUri: $imageUri"
         )
 
         when {
@@ -165,10 +127,7 @@ class OcrActivity : AppCompatActivity() {
 
                 LogUtil.warning(
                     "OCR_ACTIVITY",
-                    "Не получены " +
-                            "ocr_text, " +
-                            "receipt_image_path " +
-                            "или receipt_image_uri"
+                    "Не получены данные для OCR"
                 )
 
                 showEmptyOcr()
@@ -179,8 +138,7 @@ class OcrActivity : AppCompatActivity() {
     private fun runOcrFromFile(
         path: String
     ) {
-        continueOcrButton.isEnabled =
-            false
+        continueOcrButton.isEnabled = false
 
         Toast.makeText(
             this,
@@ -194,13 +152,10 @@ class OcrActivity : AppCompatActivity() {
         )
 
         Thread {
-
             try {
 
                 val bitmap =
-                    BitmapFactory.decodeFile(
-                        path
-                    )
+                    BitmapFactory.decodeFile(path)
 
                 if (bitmap == null) {
                     throw IllegalStateException(
@@ -208,8 +163,7 @@ class OcrActivity : AppCompatActivity() {
                     )
                 }
 
-                receiptImagePath =
-                    path
+                receiptImagePath = path
 
                 LogUtil.info(
                     "OCR_ACTIVITY",
@@ -217,9 +171,7 @@ class OcrActivity : AppCompatActivity() {
                             "${bitmap.width}x${bitmap.height}"
                 )
 
-                runPaddleOcr(
-                    bitmap
-                )
+                runPaddleOcr(bitmap)
 
             } catch (e: Exception) {
 
@@ -231,8 +183,7 @@ class OcrActivity : AppCompatActivity() {
 
                 runOnUiThread {
 
-                    continueOcrButton.isEnabled =
-                        true
+                    continueOcrButton.isEnabled = true
 
                     Toast.makeText(
                         this@OcrActivity,
@@ -244,15 +195,13 @@ class OcrActivity : AppCompatActivity() {
                     showEmptyOcr()
                 }
             }
-
         }.start()
     }
 
     private fun runOcrFromUri(
         uriString: String
     ) {
-        continueOcrButton.isEnabled =
-            false
+        continueOcrButton.isEnabled = false
 
         Toast.makeText(
             this,
@@ -266,31 +215,35 @@ class OcrActivity : AppCompatActivity() {
         )
 
         Thread {
-
             try {
 
                 val uri =
-                    Uri.parse(
-                        uriString
+                    Uri.parse(uriString)
+
+                val inputStream =
+                    contentResolver.openInputStream(uri)
+
+                if (inputStream == null) {
+                    throw IllegalStateException(
+                        "Не удалось открыть изображение"
                     )
+                }
 
                 val bitmap =
-                    contentResolver.openInputStream(
-                        uri
-                    ).use { inputStream ->
-
-                        if (inputStream == null) {
-                            null
-                        } else {
-                            BitmapFactory.decodeStream(
-                                inputStream
-                            )
+                    try {
+                        BitmapFactory.decodeStream(
+                            inputStream
+                        )
+                    } finally {
+                        try {
+                            inputStream.close()
+                        } catch (_: Exception) {
                         }
                     }
 
                 if (bitmap == null) {
                     throw IllegalStateException(
-                        "Не удалось загрузить изображение из галереи"
+                        "Не удалось декодировать изображение"
                     )
                 }
 
@@ -300,9 +253,7 @@ class OcrActivity : AppCompatActivity() {
                             "${bitmap.width}x${bitmap.height}"
                 )
 
-                runPaddleOcr(
-                    bitmap
-                )
+                runPaddleOcr(bitmap)
 
             } catch (e: Exception) {
 
@@ -314,8 +265,7 @@ class OcrActivity : AppCompatActivity() {
 
                 runOnUiThread {
 
-                    continueOcrButton.isEnabled =
-                        true
+                    continueOcrButton.isEnabled = true
 
                     Toast.makeText(
                         this@OcrActivity,
@@ -327,12 +277,11 @@ class OcrActivity : AppCompatActivity() {
                     showEmptyOcr()
                 }
             }
-
         }.start()
     }
 
     private fun runPaddleOcr(
-        bitmap: Bitmap
+        bitmap: android.graphics.Bitmap
     ) {
         try {
 
@@ -347,23 +296,12 @@ class OcrActivity : AppCompatActivity() {
                 )
 
             /*
-             * PaddleOcrEngine в текущей версии
-             * не имеет close().
-             *
-             * Поэтому здесь специально
-             * НЕ вызываем:
-             *
-             * engine.close()
-             *
-             * и НЕ используем:
-             *
-             * engine.use { }
+             * НЕ вызываем engine.close().
+             * В текущем PaddleOcrEngine такого метода нет.
              */
 
             val rawText =
-                engine.recognize(
-                    bitmap
-                )
+                engine.recognize(bitmap)
 
             val cleanText =
                 prepareCleanOcrText(
@@ -382,20 +320,14 @@ class OcrActivity : AppCompatActivity() {
 
             runOnUiThread {
 
-                continueOcrButton.isEnabled =
-                    true
+                continueOcrButton.isEnabled = true
 
                 if (
                     cleanText.trim().isEmpty()
                 ) {
-
                     showEmptyOcr()
-
                 } else {
-
-                    parseOcr(
-                        cleanText
-                    )
+                    parseOcr(cleanText)
                 }
             }
 
@@ -409,8 +341,7 @@ class OcrActivity : AppCompatActivity() {
 
             runOnUiThread {
 
-                continueOcrButton.isEnabled =
-                    true
+                continueOcrButton.isEnabled = true
 
                 Toast.makeText(
                     this@OcrActivity,
@@ -440,17 +371,16 @@ class OcrActivity : AppCompatActivity() {
                 "\n"
             )
 
-        val totalMarker =
+        val marker =
             text.indexOf(
                 "ИТОГ OCR:",
                 ignoreCase = true
             )
 
-        if (totalMarker >= 0) {
-
+        if (marker >= 0) {
             text =
                 text.substring(
-                    totalMarker +
+                    marker +
                             "ИТОГ OCR:".length
                 )
         }
@@ -465,84 +395,42 @@ class OcrActivity : AppCompatActivity() {
                     it.isNotEmpty()
                 }
 
-        val cleanLines =
-            lines.filter { line ->
-
-                !isDiagnosticLine(
-                    line
-                )
+        return lines
+            .filter {
+                !isDiagnosticLine(it)
             }
-
-        return cleanLines.joinToString(
-            "\n"
-        )
+            .joinToString("\n")
     }
 
     private fun isDiagnosticLine(
         line: String
     ): Boolean {
 
-        val normalized =
+        val value =
             line
                 .toLowerCase(
                     Locale.getDefault()
                 )
                 .trim()
 
-        return normalized.startsWith(
-            "rec output"
-        ) ||
-                normalized.startsWith(
-                    "rec #"
-                ) ||
-                normalized.startsWith(
-                    "box #"
-                ) ||
-                normalized.startsWith(
-                    "text #"
-                ) ||
-                normalized.startsWith(
-                    "det input"
-                ) ||
-                normalized.startsWith(
-                    "det output"
-                ) ||
-                normalized.startsWith(
-                    "det probability"
-                ) ||
-                normalized.startsWith(
-                    "det positive pixels"
-                ) ||
-                normalized.startsWith(
-                    "det valid boxes"
-                ) ||
-                normalized.startsWith(
-                    "det найдено"
-                ) ||
-                normalized.startsWith(
-                    "ocr_activity:"
-                ) ||
-                normalized.startsWith(
-                    "ocr_parse:"
-                ) ||
-                normalized.startsWith(
-                    "paddleocr"
-                ) ||
-                normalized.startsWith(
-                    "paddleocrengine"
-                ) ||
-                normalized.startsWith(
-                    "логutil"
-                ) ||
-                normalized.startsWith(
-                    "[info]"
-                ) ||
-                normalized.startsWith(
-                    "[warning]"
-                ) ||
-                normalized.startsWith(
-                    "[error]"
-                )
+        return value.startsWith("rec output") ||
+                value.startsWith("rec #") ||
+                value.startsWith("box #") ||
+                value.startsWith("text #") ||
+                value.startsWith("det input") ||
+                value.startsWith("det output") ||
+                value.startsWith("det probability") ||
+                value.startsWith("det positive pixels") ||
+                value.startsWith("det valid boxes") ||
+                value.startsWith("det найдено") ||
+                value.startsWith("ocr_activity:") ||
+                value.startsWith("ocr_parse:") ||
+                value.startsWith("paddleocr") ||
+                value.startsWith("paddleocrengine") ||
+                value.startsWith("логutil") ||
+                value.startsWith("[info]") ||
+                value.startsWith("[warning]") ||
+                value.startsWith("[error]")
     }
 
     private fun parseOcr(
@@ -558,12 +446,9 @@ class OcrActivity : AppCompatActivity() {
                     )
                     .split("\n")
                     .map {
-
                         it.trim()
                             .replace(
-                                Regex(
-                                    "\\s+"
-                                ),
+                                Regex("\\s+"),
                                 " "
                             )
                     }
@@ -573,44 +458,29 @@ class OcrActivity : AppCompatActivity() {
 
             LogUtil.info(
                 "OCR_PARSE",
-                "Получено чистых строк OCR: " +
-                        "${lines.size}"
+                "Получено чистых строк OCR: ${lines.size}"
             )
 
             val orderNumber =
-                extractOrderNumber(
-                    lines
-                )
+                extractOrderNumber(lines)
 
             val customerName =
-                extractCustomerName(
-                    lines
-                )
+                extractCustomerName(lines)
 
             val phone =
-                extractPhone(
-                    lines
-                )
+                extractPhone(lines)
 
             val address =
-                extractAddress(
-                    lines
-                )
+                extractAddress(lines)
 
             val total =
-                extractTotal(
-                    lines
-                )
+                extractTotal(lines)
 
             val payment =
-                extractPayment(
-                    lines
-                )
+                extractPayment(lines)
 
             val cashGiven =
-                extractCashGiven(
-                    lines
-                )
+                extractCashGiven(lines)
 
             recognizedCashGiven =
                 cashGiven
@@ -623,24 +493,16 @@ class OcrActivity : AppCompatActivity() {
                 )
 
             val deliveryDate =
-                extractDeliveryDate(
-                    lines
-                )
+                extractDeliveryDate(lines)
 
             val certificate =
-                extractCertificate(
-                    lines
-                )
+                extractCertificate(lines)
 
             val items =
-                extractItems(
-                    lines
-                )
+                extractItems(lines)
 
             val drinks =
-                extractDrinks(
-                    lines
-                )
+                extractDrinks(lines)
 
             recognizedDrinks =
                 drinks
@@ -688,12 +550,9 @@ class OcrActivity : AppCompatActivity() {
             if (
                 drinks.isNotEmpty()
             ) {
-
                 drinksWarningText.text =
                     "⚠ ПРОВЕРЬТЕ НАПИТКИ\n$drinks"
-
             } else {
-
                 drinksWarningText.text =
                     "⚠ ПРОВЕРЬТЕ НАПИТКИ"
             }
@@ -732,35 +591,26 @@ class OcrActivity : AppCompatActivity() {
         lines: List<String>
     ): String {
 
-        val priorityPatterns =
+        val patterns =
             listOf(
-
                 Regex(
                     "(?i)номер\\s*заказа\\s*[:№#-]*\\s*(\\d{4,12})"
                 ),
-
                 Regex(
                     "(?i)номерзаказа\\s*[:№#-]*\\s*(\\d{4,12})"
                 ),
-
                 Regex(
                     "(?i)номер\\s*заказ\\s*[:№#-]*\\s*(\\d{4,12})"
                 )
             )
 
         for (line in lines) {
-
-            for (
-                pattern in priorityPatterns
-            ) {
+            for (pattern in patterns) {
 
                 val match =
-                    pattern.find(
-                        line
-                    )
+                    pattern.find(line)
 
                 if (match != null) {
-
                     return match.groupValues[1]
                 }
             }
@@ -769,9 +619,7 @@ class OcrActivity : AppCompatActivity() {
         for (line in lines) {
 
             val normalized =
-                normalizeOcrText(
-                    line
-                )
+                normalizeOcrText(line)
 
             if (
                 normalized.contains(
@@ -782,9 +630,7 @@ class OcrActivity : AppCompatActivity() {
                 val number =
                     Regex(
                         "\\d{4,12}"
-                    ).find(
-                        line
-                    )
+                    ).find(line)
 
                 if (number != null) {
                     return number.value
@@ -797,12 +643,9 @@ class OcrActivity : AppCompatActivity() {
             val match =
                 Regex(
                     "(?i)[№#]\\s*(\\d{4,12})"
-                ).find(
-                    line
-                )
+                ).find(line)
 
             if (match != null) {
-
                 return match.groupValues[1]
             }
         }
@@ -814,9 +657,7 @@ class OcrActivity : AppCompatActivity() {
         lines: List<String>
     ): String {
 
-        for (
-            i in lines.indices
-        ) {
+        for (i in lines.indices) {
 
             val normalized =
                 normalizeOcrText(
@@ -848,13 +689,11 @@ class OcrActivity : AppCompatActivity() {
                         sameLine
                     )
                 ) {
-
                     return sameLine
                 }
 
                 if (
-                    i + 1 <
-                    lines.size
+                    i + 1 < lines.size
                 ) {
 
                     val next =
@@ -867,7 +706,6 @@ class OcrActivity : AppCompatActivity() {
                             next
                         )
                     ) {
-
                         return next
                     }
                 }
@@ -886,7 +724,6 @@ class OcrActivity : AppCompatActivity() {
                     candidate
                 )
             ) {
-
                 return candidate
             }
         }
@@ -912,32 +749,18 @@ class OcrActivity : AppCompatActivity() {
         value: String
     ): Boolean {
 
-        if (
-            value.length < 3
-        ) {
-            return false
-        }
+        if (value.length < 3) return false
+        if (value.length > 60) return false
 
         if (
-            value.length > 60
-        ) {
-            return false
-        }
-
-        if (
-            Regex(
-                "\\d"
-            ).containsMatchIn(
-                value
-            )
+            Regex("\\d")
+                .containsMatchIn(value)
         ) {
             return false
         }
 
         val normalized =
-            normalizeOcrText(
-                value
-            )
+            normalizeOcrText(value)
 
         val forbidden =
             listOf(
@@ -960,24 +783,16 @@ class OcrActivity : AppCompatActivity() {
             )
 
         for (word in forbidden) {
-
             if (
-                normalized.contains(
-                    word
-                )
+                normalized.contains(word)
             ) {
                 return false
             }
         }
 
-        val letters =
-            value.count {
-                Character.isLetter(
-                    it
-                )
-            }
-
-        return letters >= 3
+        return value.count {
+            Character.isLetter(it)
+        } >= 3
     }
 
     private fun extractPhone(
@@ -987,32 +802,28 @@ class OcrActivity : AppCompatActivity() {
         for (line in lines) {
 
             val digits =
-                normalizePhoneDigits(
-                    line
-                )
+                normalizePhoneDigits(line)
 
             if (
                 digits.startsWith("375") &&
                 digits.length >= 12
             ) {
-
                 return formatBelarusPhone(
-                    digits.take(12)
+                    digits.substring(
+                        0,
+                        12
+                    )
                 )
             }
         }
 
         val allText =
-            lines.joinToString(
-                " "
-            )
+            lines.joinToString(" ")
 
         val match =
             Regex(
                 "(?:\\+?375\\s*)?(\\d{2})\\s*(\\d{3})\\s*(\\d{2})\\s*(\\d{2})"
-            ).find(
-                allText
-            )
+            ).find(allText)
 
         if (match != null) {
 
@@ -1042,12 +853,9 @@ class OcrActivity : AppCompatActivity() {
             digits.length == 11 &&
             digits.startsWith("8")
         ) {
-
             digits =
                 "375" +
-                        digits.substring(
-                            1
-                        )
+                        digits.substring(1)
         }
 
         return digits
@@ -1065,25 +873,13 @@ class OcrActivity : AppCompatActivity() {
         }
 
         return "+375 " +
-                digits.substring(
-                    3,
-                    5
-                ) +
+                digits.substring(3, 5) +
                 " " +
-                digits.substring(
-                    5,
-                    8
-                ) +
+                digits.substring(5, 8) +
                 "-" +
-                digits.substring(
-                    8,
-                    10
-                ) +
+                digits.substring(8, 10) +
                 "-" +
-                digits.substring(
-                    10,
-                    12
-                )
+                digits.substring(10, 12)
     }
 
     private fun extractAddress(
@@ -1096,9 +892,7 @@ class OcrActivity : AppCompatActivity() {
         for (line in lines) {
 
             val normalized =
-                normalizeOcrText(
-                    line
-                )
+                normalizeOcrText(line)
 
             if (
                 looksLikeAddress(
@@ -1108,17 +902,12 @@ class OcrActivity : AppCompatActivity() {
             ) {
 
                 val cleaned =
-                    cleanAddress(
-                        line
-                    )
+                    cleanAddress(line)
 
                 if (
                     cleaned.isNotEmpty()
                 ) {
-
-                    candidates.add(
-                        cleaned
-                    )
+                    candidates.add(cleaned)
                 }
             }
         }
@@ -1127,9 +916,19 @@ class OcrActivity : AppCompatActivity() {
             candidates.isNotEmpty()
         ) {
 
-            return candidates.maxByOrNull {
-                it.length
-            } ?: ""
+            var longest =
+                candidates[0]
+
+            for (candidate in candidates) {
+                if (
+                    candidate.length >
+                    longest.length
+                ) {
+                    longest = candidate
+                }
+            }
+
+            return longest
         }
 
         return ""
@@ -1140,9 +939,7 @@ class OcrActivity : AppCompatActivity() {
         normalized: String
     ): Boolean {
 
-        if (
-            line.length < 4
-        ) {
+        if (line.length < 4) {
             return false
         }
 
@@ -1162,28 +959,16 @@ class OcrActivity : AppCompatActivity() {
             )
 
         for (word in words) {
-
             if (
-                normalized.contains(
-                    word
-                )
+                normalized.contains(word)
             ) {
                 return true
             }
         }
 
-        if (
-            Regex(
-                "(?i)(ул\\.?|просп\\.?|пр-т|пер\\.?|улица|проспект|переулок)\\s*[а-яa-zё0-9]"
-            ).containsMatchIn(
-                line
-            )
-        ) {
-
-            return true
-        }
-
-        return false
+        return Regex(
+            "(?i)(ул\\.?|просп\\.?|пр-т|пер\\.?|улица|проспект|переулок)\\s*[а-яa-zё0-9]"
+        ).containsMatchIn(line)
     }
 
     private fun cleanAddress(
@@ -1204,9 +989,7 @@ class OcrActivity : AppCompatActivity() {
         lines: List<String>
     ): String {
 
-        for (
-            i in lines.indices
-        ) {
+        for (i in lines.indices) {
 
             val normalized =
                 normalizeOcrText(
@@ -1230,13 +1013,11 @@ class OcrActivity : AppCompatActivity() {
                 if (
                     same.isNotEmpty()
                 ) {
-
                     return same
                 }
 
                 if (
-                    i + 1 <
-                    lines.size
+                    i + 1 < lines.size
                 ) {
 
                     val next =
@@ -1247,7 +1028,6 @@ class OcrActivity : AppCompatActivity() {
                     if (
                         next.isNotEmpty()
                     ) {
-
                         return next
                     }
                 }
@@ -1255,7 +1035,7 @@ class OcrActivity : AppCompatActivity() {
         }
 
         for (
-            i in lines.indices.reversed()
+            i in (lines.size - 1) downTo 0
         ) {
 
             val normalized =
@@ -1277,7 +1057,6 @@ class OcrActivity : AppCompatActivity() {
                 if (
                     money.isNotEmpty()
                 ) {
-
                     return money
                 }
             }
@@ -1293,9 +1072,7 @@ class OcrActivity : AppCompatActivity() {
         for (line in lines) {
 
             val normalized =
-                normalizeOcrText(
-                    line
-                )
+                normalizeOcrText(line)
 
             if (
                 normalized.contains(
@@ -1305,10 +1082,7 @@ class OcrActivity : AppCompatActivity() {
                     "способплаты"
                 )
             ) {
-
-                return normalizePayment(
-                    line
-                )
+                return normalizePayment(line)
             }
         }
 
@@ -1330,56 +1104,29 @@ class OcrActivity : AppCompatActivity() {
                 )
 
         if (
-            normalized.contains(
-                "cash"
-            ) ||
-            normalized.contains(
-                "сасh"
-            ) ||
-            normalized.contains(
-                "сash"
-            ) ||
-            normalized.contains(
-                "casн"
-            ) ||
-            normalized.contains(
-                "налич"
-            )
+            normalized.contains("cash") ||
+            normalized.contains("сасh") ||
+            normalized.contains("сash") ||
+            normalized.contains("casн") ||
+            normalized.contains("налич")
         ) {
-
             return "Наличные"
         }
 
         if (
-            normalized.contains(
-                "card"
-            ) ||
-            normalized.contains(
-                "карт"
-            ) ||
-            normalized.contains(
-                "visa"
-            ) ||
-            normalized.contains(
-                "master"
-            ) ||
-            normalized.contains(
-                "безнал"
-            )
+            normalized.contains("card") ||
+            normalized.contains("карт") ||
+            normalized.contains("visa") ||
+            normalized.contains("master") ||
+            normalized.contains("безнал")
         ) {
-
             return "Карта"
         }
 
         if (
-            normalized.contains(
-                "online"
-            ) ||
-            normalized.contains(
-                "онлайн"
-            )
+            normalized.contains("online") ||
+            normalized.contains("онлайн")
         ) {
-
             return "Онлайн"
         }
 
@@ -1395,9 +1142,7 @@ class OcrActivity : AppCompatActivity() {
         lines: List<String>
     ): String {
 
-        for (
-            i in lines.indices
-        ) {
+        for (i in lines.indices) {
 
             val normalized =
                 normalizeOcrText(
@@ -1405,15 +1150,9 @@ class OcrActivity : AppCompatActivity() {
                 )
 
             if (
-                normalized.contains(
-                    "отклиента"
-                ) ||
-                normalized.contains(
-                    "полученоотклиента"
-                ) ||
-                normalized.contains(
-                    "внесено"
-                )
+                normalized.contains("отклиента") ||
+                normalized.contains("полученоотклиента") ||
+                normalized.contains("внесено")
             ) {
 
                 val money =
@@ -1424,13 +1163,11 @@ class OcrActivity : AppCompatActivity() {
                 if (
                     money.isNotEmpty()
                 ) {
-
                     return money
                 }
 
                 if (
-                    i + 1 <
-                    lines.size
+                    i + 1 < lines.size
                 ) {
 
                     val next =
@@ -1441,7 +1178,6 @@ class OcrActivity : AppCompatActivity() {
                     if (
                         next.isNotEmpty()
                     ) {
-
                         return next
                     }
                 }
@@ -1457,9 +1193,7 @@ class OcrActivity : AppCompatActivity() {
         cashGiven: String
     ): String {
 
-        for (
-            i in lines.indices
-        ) {
+        for (i in lines.indices) {
 
             val normalized =
                 normalizeOcrText(
@@ -1467,12 +1201,8 @@ class OcrActivity : AppCompatActivity() {
                 )
 
             if (
-                normalized.contains(
-                    "сдача"
-                ) ||
-                normalized.contains(
-                    "сдачи"
-                )
+                normalized.contains("сдача") ||
+                normalized.contains("сдачи")
             ) {
 
                 val money =
@@ -1483,13 +1213,11 @@ class OcrActivity : AppCompatActivity() {
                 if (
                     money.isNotEmpty()
                 ) {
-
                     return money
                 }
 
                 if (
-                    i + 1 <
-                    lines.size
+                    i + 1 < lines.size
                 ) {
 
                     val next =
@@ -1500,20 +1228,11 @@ class OcrActivity : AppCompatActivity() {
                     if (
                         next.isNotEmpty()
                     ) {
-
                         return next
                     }
                 }
             }
         }
-
-        /*
-         * Сдачу вычисляем только когда
-         * известны обе суммы.
-         *
-         * Ноль автоматически
-         * НЕ подставляем.
-         */
 
         if (
             total.isNotEmpty() &&
@@ -1521,14 +1240,10 @@ class OcrActivity : AppCompatActivity() {
         ) {
 
             val totalValue =
-                moneyToDouble(
-                    total
-                )
+                moneyToDouble(total)
 
             val cashValue =
-                moneyToDouble(
-                    cashGiven
-                )
+                moneyToDouble(cashGiven)
 
             if (
                 totalValue != null &&
@@ -1555,12 +1270,9 @@ class OcrActivity : AppCompatActivity() {
             val match =
                 Regex(
                     "\\d{2}[./-]\\d{2}[./-]\\d{4}"
-                ).find(
-                    line
-                )
+                ).find(line)
 
             if (match != null) {
-
                 return match.value
             }
         }
@@ -1575,16 +1287,13 @@ class OcrActivity : AppCompatActivity() {
         for (line in lines) {
 
             val normalized =
-                normalizeOcrText(
-                    line
-                )
+                normalizeOcrText(line)
 
             if (
                 normalized.contains(
                     "сертификат"
                 )
             ) {
-
                 return line
                     .substringAfter(
                         ":",
@@ -1604,11 +1313,10 @@ class OcrActivity : AppCompatActivity() {
         val result =
             mutableListOf<String>()
 
-        var inItemsSection =
+        var inItems =
             false
 
-        var i =
-            0
+        var i = 0
 
         while (
             i < lines.size
@@ -1618,20 +1326,15 @@ class OcrActivity : AppCompatActivity() {
                 lines[i]
 
             val normalized =
-                normalizeOcrText(
-                    line
-                )
+                normalizeOcrText(line)
 
             if (
                 normalized == "блюдо" ||
                 normalized == "блод"
             ) {
 
-                inItemsSection =
-                    true
-
+                inItems = true
                 i++
-
                 continue
             }
 
@@ -1646,55 +1349,36 @@ class OcrActivity : AppCompatActivity() {
                     "уммазаказа"
                 )
             ) {
-
                 break
             }
 
-            if (
-                !inItemsSection
-            ) {
-
+            if (!inItems) {
                 i++
-
                 continue
             }
 
             if (
-                !looksLikeItem(
-                    line
-                )
+                !looksLikeItem(line)
             ) {
-
                 i++
-
                 continue
             }
 
             val itemName =
-                cleanItemName(
-                    line
-                )
+                cleanItemName(line)
 
             if (
                 itemName.isEmpty()
             ) {
-
                 i++
-
                 continue
             }
 
-            var quantity =
-                ""
+            var quantity = ""
+            var price = ""
 
-            var price =
-                ""
-
-            var j =
-                i + 1
-
-            var checked =
-                0
+            var j = i + 1
+            var checked = 0
 
             while (
                 j < lines.size &&
@@ -1706,27 +1390,20 @@ class OcrActivity : AppCompatActivity() {
 
                 if (
                     quantity.isEmpty() &&
-                    isQuantityOnly(
-                        next
-                    )
+                    isQuantityOnly(next)
                 ) {
 
                     quantity =
-                        normalizeQuantity(
-                            next
-                        )
+                        normalizeQuantity(next)
 
                     j++
                     checked++
-
                     continue
                 }
 
                 if (
                     price.isEmpty() &&
-                    isMoneyOnly(
-                        next
-                    )
+                    isMoneyOnly(next)
                 ) {
 
                     price =
@@ -1736,16 +1413,12 @@ class OcrActivity : AppCompatActivity() {
 
                     j++
                     checked++
-
                     continue
                 }
 
                 if (
-                    looksLikeItem(
-                        next
-                    )
+                    looksLikeItem(next)
                 ) {
-
                     break
                 }
 
@@ -1772,14 +1445,9 @@ class OcrActivity : AppCompatActivity() {
 
             if (
                 entry.isNotEmpty() &&
-                !result.contains(
-                    entry
-                )
+                !result.contains(entry)
             ) {
-
-                result.add(
-                    entry
-                )
+                result.add(entry)
             }
 
             i++
@@ -1800,77 +1468,43 @@ class OcrActivity : AppCompatActivity() {
         for (line in lines) {
 
             val normalized =
-                normalizeOcrText(
-                    line
-                )
+                normalizeOcrText(line)
 
             if (
-                isHeaderLine(
-                    line
-                ) ||
-                looksLikeOrderLabel(
-                    line
-                )
+                isHeaderLine(line) ||
+                looksLikeOrderLabel(line)
             ) {
-
                 continue
             }
 
             val hasDrinkWord =
-                normalized.contains(
-                    "напит"
-                ) ||
-                        normalized.contains(
-                            "кола"
-                        ) ||
-                        normalized.contains(
-                            "пепси"
-                        ) ||
-                        normalized.contains(
-                            "спрайт"
-                        ) ||
-                        normalized.contains(
-                            "фанта"
-                        ) ||
-                        normalized.contains(
-                            "вода"
-                        ) ||
-                        normalized.contains(
-                            "сок"
-                        ) ||
-                        normalized.contains(
-                            "лимонад"
-                        ) ||
-                        normalized.contains(
-                            "кофе"
-                        ) ||
-                        normalized.contains(
-                            "чай"
-                        )
+                normalized.contains("напит") ||
+                        normalized.contains("кола") ||
+                        normalized.contains("пепси") ||
+                        normalized.contains("спрайт") ||
+                        normalized.contains("фанта") ||
+                        normalized.contains("вода") ||
+                        normalized.contains("сок") ||
+                        normalized.contains("лимонад") ||
+                        normalized.contains("кофе") ||
+                        normalized.contains("чай")
 
             val hasVolume =
                 Regex(
                     "(?i)\\d+[,.]?\\d*\\s*(л|л\\.|литр|литра|литров|мл)"
-                ).containsMatchIn(
-                    line
-                )
+                ).containsMatchIn(line)
 
             if (
                 hasDrinkWord ||
                 hasVolume
             ) {
-
-                result.add(
-                    line
-                )
+                result.add(line)
             }
         }
 
         return result
             .distinct()
-            .joinToString(
-                "\n"
-            )
+            .joinToString("\n")
     }
 
     private fun looksLikeItem(
@@ -1881,65 +1515,30 @@ class OcrActivity : AppCompatActivity() {
             value.trim()
 
         if (
-            text.length < 3
-        ) {
-            return false
-        }
-
-        if (
+            text.length < 3 ||
             text.length > 100
         ) {
             return false
         }
 
         if (
-            isQuantityOnly(
-                text
-            ) ||
-            isMoneyOnly(
-                text
-            )
-        ) {
-            return false
-        }
-
-        if (
-            looksLikeOrderLabel(
-                text
-            )
-        ) {
-            return false
-        }
-
-        if (
-            isHeaderLine(
-                text
-            )
+            isQuantityOnly(text) ||
+            isMoneyOnly(text) ||
+            looksLikeOrderLabel(text) ||
+            isHeaderLine(text)
         ) {
             return false
         }
 
         val normalized =
-            normalizeOcrText(
-                text
-            )
+            normalizeOcrText(text)
 
         if (
-            normalized.contains(
-                "доставкаburgerking"
-            ) ||
-            normalized.contains(
-                "курьердоставки"
-            ) ||
-            normalized.contains(
-                "доставленвполномобъеме"
-            ) ||
-            normalized.contains(
-                "суммадоскидки"
-            ) ||
-            normalized.contains(
-                "суммазаказа"
-            )
+            normalized.contains("доставкаburgerking") ||
+            normalized.contains("курьердоставки") ||
+            normalized.contains("доставленвполномобъеме") ||
+            normalized.contains("суммадоскидки") ||
+            normalized.contains("суммазаказа")
         ) {
             return false
         }
@@ -1953,14 +1552,9 @@ class OcrActivity : AppCompatActivity() {
             return false
         }
 
-        val letters =
-            text.count {
-                Character.isLetter(
-                    it
-                )
-            }
-
-        return letters >= 2
+        return text.count {
+            Character.isLetter(it)
+        } >= 2
     }
 
     private fun cleanItemName(
@@ -1975,9 +1569,7 @@ class OcrActivity : AppCompatActivity() {
                 ""
             )
             .replace(
-                Regex(
-                    "\\s+"
-                ),
+                Regex("\\s+"),
                 " "
             )
             .trim()
@@ -1988,9 +1580,7 @@ class OcrActivity : AppCompatActivity() {
     ): Boolean {
 
         val normalized =
-            normalizeOcrText(
-                value
-            )
+            normalizeOcrText(value)
 
         return normalized == "блюдо" ||
                 normalized == "блод" ||
@@ -2004,43 +1594,19 @@ class OcrActivity : AppCompatActivity() {
     ): Boolean {
 
         val normalized =
-            normalizeOcrText(
-                value
-            )
+            normalizeOcrText(value)
 
-        return normalized.contains(
-            "номерзаказа"
-        ) ||
-                normalized.contains(
-                    "номерзаказ"
-                ) ||
-                normalized.contains(
-                    "способоплаты"
-                ) ||
-                normalized.contains(
-                    "суммазаказа"
-                ) ||
-                normalized.contains(
-                    "уммазаказа"
-                ) ||
-                normalized.contains(
-                    "суммадоскидки"
-                ) ||
-                normalized.contains(
-                    "сдача"
-                ) ||
-                normalized.contains(
-                    "отклиента"
-                ) ||
-                normalized.contains(
-                    "сертификат"
-                ) ||
-                normalized.contains(
-                    "курьердоставки"
-                ) ||
-                normalized.contains(
-                    "доставленвполномобъеме"
-                )
+        return normalized.contains("номерзаказа") ||
+                normalized.contains("номерзаказ") ||
+                normalized.contains("способоплаты") ||
+                normalized.contains("суммазаказа") ||
+                normalized.contains("уммазаказа") ||
+                normalized.contains("суммадоскидки") ||
+                normalized.contains("сдача") ||
+                normalized.contains("отклиента") ||
+                normalized.contains("сертификат") ||
+                normalized.contains("курьердоставки") ||
+                normalized.contains("доставленвполномобъеме")
     }
 
     private fun isQuantityOnly(
@@ -2050,16 +1616,11 @@ class OcrActivity : AppCompatActivity() {
         val normalized =
             value
                 .trim()
-                .replace(
-                    ",",
-                    "."
-                )
+                .replace(",", ".")
 
         return Regex(
             "^\\d+(?:\\.\\d+)?$"
-        ).matches(
-            normalized
-        )
+        ).matches(normalized)
     }
 
     private fun normalizeQuantity(
@@ -2068,13 +1629,8 @@ class OcrActivity : AppCompatActivity() {
 
         return value
             .trim()
-            .replace(
-                ",",
-                "."
-            )
-            .removeSuffix(
-                ".0"
-            )
+            .replace(",", ".")
+            .removeSuffix(".0")
     }
 
     private fun isMoneyOnly(
@@ -2084,16 +1640,11 @@ class OcrActivity : AppCompatActivity() {
         val normalized =
             value
                 .trim()
-                .replace(
-                    ",",
-                    "."
-                )
+                .replace(",", ".")
 
         return Regex(
             "^\\d+(?:\\.\\d{1,2})?$"
-        ).matches(
-            normalized
-        )
+        ).matches(normalized)
     }
 
     private fun extractMoneyFromText(
@@ -2103,20 +1654,14 @@ class OcrActivity : AppCompatActivity() {
         val decimal =
             Regex(
                 "(?<!\\d)(\\d{1,6}[,.]\\d{1,2})(?!\\d)"
-            ).find(
-                value
-            )
+            ).find(value)
 
         if (
             decimal != null
         ) {
-
             return decimal
                 .groupValues[1]
-                .replace(
-                    ",",
-                    "."
-                )
+                .replace(",", ".")
         }
 
         return ""
@@ -2129,18 +1674,11 @@ class OcrActivity : AppCompatActivity() {
         return try {
 
             value
-                .replace(
-                    " ",
-                    ""
-                )
-                .replace(
-                    ",",
-                    "."
-                )
+                .replace(" ", "")
+                .replace(",", ".")
                 .toDouble()
 
         } catch (_: Exception) {
-
             null
         }
     }
@@ -2164,102 +1702,39 @@ class OcrActivity : AppCompatActivity() {
             .toLowerCase(
                 Locale.getDefault()
             )
-            .replace(
-                "ё",
-                "е"
-            )
-            .replace(
-                "№",
-                "номер"
-            )
-            .replace(
-                " ",
-                ""
-            )
-            .replace(
-                "\t",
-                ""
-            )
-            .replace(
-                ":",
-                ""
-            )
-            .replace(
-                ";",
-                ""
-            )
-            .replace(
-                ",",
-                ""
-            )
-            .replace(
-                ".",
-                ""
-            )
-            .replace(
-                "-",
-                ""
-            )
-            .replace(
-                "_",
-                ""
-            )
+            .replace("ё", "е")
+            .replace("№", "номер")
+            .replace(" ", "")
+            .replace("\t", "")
+            .replace(":", "")
+            .replace(";", "")
+            .replace(",", "")
+            .replace(".", "")
+            .replace("-", "")
+            .replace("_", "")
     }
 
     private fun showEmptyOcr() {
 
-        orderNumberEditText.setText(
-            ""
-        )
+        orderNumberEditText.setText("")
+        customerNameEditText.setText("")
+        phoneEditText.setText("")
+        addressEditText.setText("")
+        totalEditText.setText("")
+        paymentEditText.setText("")
+        changeEditText.setText("")
+        deliveryDateEditText.setText("")
+        certificateEditText.setText("")
+        itemsEditText.setText("")
 
-        customerNameEditText.setText(
-            ""
-        )
-
-        phoneEditText.setText(
-            ""
-        )
-
-        addressEditText.setText(
-            ""
-        )
-
-        totalEditText.setText(
-            ""
-        )
-
-        paymentEditText.setText(
-            ""
-        )
-
-        changeEditText.setText(
-            ""
-        )
-
-        deliveryDateEditText.setText(
-            ""
-        )
-
-        certificateEditText.setText(
-            ""
-        )
-
-        itemsEditText.setText(
-            ""
-        )
-
-        recognizedCashGiven =
-            ""
-
-        recognizedDrinks =
-            ""
+        recognizedCashGiven = ""
+        recognizedDrinks = ""
 
         drinksWarningText.text =
             "⚠ НЕ УДАЛОСЬ РАСПОЗНАТЬ ЧЕК\n" +
                     "Проверьте данные вручную."
 
-        continueOcrButton.isEnabled =
-            true
+        continueOcrButton.isEnabled = true
     }
 
     private fun saveAndContinue() {
@@ -2329,13 +1804,9 @@ class OcrActivity : AppCompatActivity() {
                 .toString()
                 .trim()
 
-        val drinks =
-            recognizedDrinks.trim()
-
         if (
             address.isEmpty()
         ) {
-
             Toast.makeText(
                 this,
                 "⚠ Проверьте адрес",
@@ -2346,7 +1817,6 @@ class OcrActivity : AppCompatActivity() {
         if (
             phone.isEmpty()
         ) {
-
             Toast.makeText(
                 this,
                 "⚠ Проверьте телефон",
@@ -2357,7 +1827,6 @@ class OcrActivity : AppCompatActivity() {
         if (
             total.isEmpty()
         ) {
-
             Toast.makeText(
                 this,
                 "⚠ Проверьте сумму",
@@ -2366,9 +1835,8 @@ class OcrActivity : AppCompatActivity() {
         }
 
         if (
-            drinks.isEmpty()
+            recognizedDrinks.isEmpty()
         ) {
-
             Toast.makeText(
                 this,
                 "⚠ Проверьте напитки",
@@ -2380,7 +1848,6 @@ class OcrActivity : AppCompatActivity() {
             payment == "Наличные" &&
             change.isEmpty()
         ) {
-
             Toast.makeText(
                 this,
                 "⚠ Сдача не определена — проверьте чек",
@@ -2403,9 +1870,7 @@ class OcrActivity : AppCompatActivity() {
 
         resultIntent.putExtra(
             "phone",
-            normalizePhoneForSave(
-                phone
-            )
+            normalizePhoneForSave(phone)
         )
 
         resultIntent.putExtra(
@@ -2460,7 +1925,7 @@ class OcrActivity : AppCompatActivity() {
 
         resultIntent.putExtra(
             "drinks",
-            drinks
+            recognizedDrinks
         )
 
         resultIntent.putExtra(
@@ -2484,15 +1949,8 @@ class OcrActivity : AppCompatActivity() {
                     "Оплата: $payment\n" +
                     "Сумма от клиента: $recognizedCashGiven\n" +
                     "Сдача: $change\n" +
-                    "Напитки: $drinks"
+                    "Напитки: $recognizedDrinks"
         )
-
-        /*
-         * Теперь OrderCheckActivity уже существует.
-         * Используем прямой Intent.
-         *
-         * Reflection больше не нужен.
-         */
 
         try {
 
@@ -2559,9 +2017,7 @@ class OcrActivity : AppCompatActivity() {
 
             target.putExtra(
                 key,
-                source.getStringExtra(
-                    key
-                ) ?: ""
+                source.getStringExtra(key) ?: ""
             )
         }
     }
@@ -2571,20 +2027,13 @@ class OcrActivity : AppCompatActivity() {
     ): String {
 
         val digits =
-            normalizePhoneDigits(
-                value
-            )
+            normalizePhoneDigits(value)
 
         if (
             digits.length == 12 &&
-            digits.startsWith(
-                "375"
-            )
+            digits.startsWith("375")
         ) {
-
-            return formatBelarusPhone(
-                digits
-            )
+            return formatBelarusPhone(digits)
         }
 
         return value
@@ -2607,40 +2056,29 @@ class OcrActivity : AppCompatActivity() {
             throwable.javaClass.name
         )
 
-        builder.append(
-            ": "
-        )
+        builder.append(": ")
 
         builder.append(
             throwable.message ?: ""
         )
 
-        builder.append(
-            "\n"
-        )
+        builder.append("\n")
 
         for (
             element in throwable.stackTrace
         ) {
 
-            builder.append(
-                "\tat "
-            )
-
+            builder.append("\tat ")
             builder.append(
                 element.toString()
             )
-
-            builder.append(
-                "\n"
-            )
+            builder.append("\n")
         }
 
         var cause =
             throwable.cause
 
-        var depth =
-            0
+        var depth = 0
 
         while (
             cause != null &&
@@ -2655,33 +2093,23 @@ class OcrActivity : AppCompatActivity() {
                 cause.javaClass.name
             )
 
-            builder.append(
-                ": "
-            )
+            builder.append(": ")
 
             builder.append(
                 cause.message ?: ""
             )
 
-            builder.append(
-                "\n"
-            )
+            builder.append("\n")
 
             for (
                 element in cause.stackTrace
             ) {
 
-                builder.append(
-                    "\tat "
-                )
-
+                builder.append("\tat ")
                 builder.append(
                     element.toString()
                 )
-
-                builder.append(
-                    "\n"
-                )
+                builder.append("\n")
             }
 
             cause =
