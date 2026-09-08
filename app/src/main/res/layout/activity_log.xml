@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5EBDC"
+    android:padding="18dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ЖУРНАЛ РАБОТЫ"
+        android:textColor="#502314"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Ошибки и события приложения"
+        android:textColor="#806D63"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/copyLogButton"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:text="📋 СКОПИРОВАТЬ"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:backgroundTint="#D62300" />
+
+        <Button
+            android:id="@+id/refreshLogButton"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:text="↻ ОБНОВИТЬ"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:backgroundTint="#FF8732" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/clearLogButton"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginTop="8dp"
+        android:text="🗑 ОЧИСТИТЬ ЖУРНАЛ"
+        android:textColor="#502314"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:backgroundTint="#FFFFFF" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1"
+        android:background="#FFFFFF"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/logTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Журнал пока пуст."
+            android:textColor="#30231E"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:textIsSelectable="true" />
+
+    </ScrollView>
+
+</LinearLayout>

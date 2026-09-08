@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5EBDC">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Проверка чека"
+            android:textColor="#502314"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Проверьте распознанные данные перед сохранением заказа"
+            android:textColor="#806D63"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="НОМЕР ЗАКАЗА"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/orderNumberEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:hint="Номер заказа"
+            android:inputType="number"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="КЛИЕНТ"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/customerNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:hint="Имя клиента"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="ТЕЛЕФОН"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/phoneEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:hint="+375 XX XXX-XX-XX"
+            android:inputType="phone"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="АДРЕС"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/addressEditText"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:gravity="top"
+            android:hint="Адрес доставки"
+            android:inputType="textMultiLine"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="СУММА"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/totalEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:hint="0.00"
+            android:inputType="numberDecimal"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="ОПЛАТА"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/paymentEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:hint="cash / карта / онлайн"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="СДАЧА"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/changeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:hint="Неизвестно"
+            android:inputType="numberDecimal"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="ДАТА ДОСТАВКИ"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/deliveryDateEditText"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:hint="ДД.ММ.ГГГГ ЧЧ:ММ"
+            android:inputType="text"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="СЕРТИФИКАТ"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/certificateEditText"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:hint="ДД.ММ.ГГГГ ЧЧ:ММ"
+            android:inputType="text"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="СОСТАВ ЗАКАЗА"
+            android:textColor="#502314"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/itemsEditText"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginTop="6dp"
+            android:background="#FFFFFF"
+            android:gravity="top"
+            android:hint="Блюда и количество"
+            android:inputType="textMultiLine"
+            android:padding="14dp"
+            android:textColor="#502314"
+            android:textColorHint="#A89084"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/drinksWarningText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="#FFF1C7"
+            android:padding="14dp"
+            android:text="РАСПОЗНАВАНИЕ ЧЕКА..."
+            android:textColor="#8A5A00"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/continueOcrButton"
+            android:layout_width="match_parent"
+            android:layout_height="62dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#D62300"
+            android:text="СОХРАНИТЬ ЗАКАЗ"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>
